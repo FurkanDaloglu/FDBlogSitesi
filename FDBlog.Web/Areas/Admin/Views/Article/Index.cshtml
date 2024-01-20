@@ -1,0 +1,85 @@
+﻿@using FDBlog.Web.Consts
+@model List<ArticleDto>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Makale Yönetimi /</span>
+        Makaleler
+    </h4>
+    <!-- Basic Bootstrap Table -->
+    <div class="card">
+        <div class="table-responsive text-nowrap m-5">
+
+            @{
+                // @if (User.IsInRole("Superadmin") || User.IsInRole("Admin"))
+                @if (User.IsInRole(RoleConsts.Superadmin) || User.IsInRole(RoleConsts.Admin))
+                {
+                    <a class="btn btn-success mb-3" asp-area="Admin" asp-controller="Article" asp-action="Add">
+                        Makale Ekle <i class="bx bx-plus"></i>
+                    </a>
+                }
+            }
+            
+            <table class="table table-bordered" id="articlesTable" width="100%" collspacing="0">
+                <thead>
+                    <tr>
+                        <th>Başlık</th>
+                        <th>Kategori</th>
+                        <th>Oluşturulma Tarihi</th>
+                        <th>Oluşturan</th>
+                        <th>Durum</th>
+                        @{
+                            @if (User.IsInRole(RoleConsts.Superadmin) || User.IsInRole(RoleConsts.Admin))
+                            {
+                                <th>İşlemler</th>
+                            }
+                        }
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>Başlık</th>
+                        <th>Kategori</th>
+                        <th>Oluşturulma Tarihi</th>
+                        <th>Oluşturan</th>
+                        <th>Durum</th>
+                        @{
+                            @if (User.IsInRole(RoleConsts.Superadmin) || User.IsInRole(RoleConsts.Admin))
+                            {
+                                <th>İşlemler</th>
+                            }
+                        }
+
+                    </tr>
+                </tfoot>
+                <tbody class="table-border-bottom-0">
+                    @foreach (var item in Model)
+                    {
+                        <tr name="@item.Id">
+                            <td>@item.Title</td>
+                            <td>@item.Category.Name</td>
+                            <td>@item.CreatedDate.ToShortDateString()</td>
+                            <td>@item.CreatedBy</td>
+                            <td>@(item.IsDeleted ? "Aktif Değildir" : "Aktif")</td>
+                            @{
+                                @if (User.IsInRole(RoleConsts.Superadmin) || User.IsInRole(RoleConsts.Admin))
+                                {
+                                    <td>
+                                        <a class="btn btn-primary btn-sn" data-id="@item.Id" asp-area="Admin" asp-controller="Article" asp-action="Update" asp-route-articleId="@item.Id"><i class="bx bxs-edit"></i></a>
+                                        <a class="btn btn-danger btn-sn" data-id="@item.Id" asp-area="Admin" asp-controller="Article" asp-action="Delete" asp-route-articleId="@item.Id"><i class="bx bx-minus-circle"></i></a>
+                                    </td>
+                                }
+                            }
+                            
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!--/ Basic Bootstrap Table -->
+
+</div>
+
+@section ForTr {
+    <script src="~/js/articleIndex.js" type="application/ecmascript"></script>
+}
